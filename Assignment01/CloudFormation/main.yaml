@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Bài thực hành 1 của nhóm 21
+
+
+Resources:
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://nhom21-bucket.s3.amazonaws.com/vpc.yaml
+
+  
+  NATGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://nhom21-bucket.s3.amazonaws.com/nat_gateway.yaml
+      Parameters:
+        PublicSubnet: !GetAtt  VPCStack.Outputs.PublicSubnet
+
+  RouteTablesStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://nhom21-bucket.s3.amazonaws.com/route_table.yaml
+      Parameters:
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        IGW: !GetAtt VPCStack.Outputs.IGW
+        PublicSubnet: !GetAtt  VPCStack.Outputs.PublicSubnet
+        PrivateSubnet: !GetAtt  VPCStack.Outputs.PrivateSubnet
+        NatGateway: !GetAtt NATGatewayStack.Outputs.NatGateway
+
+  SecurityGroupStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://nhom21-bucket.s3.amazonaws.com/security_group.yaml
+      Parameters:
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        LocalIP: 192.168.1.105/32
+
+  EC2Stack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://nhom21-bucket.s3.amazonaws.com/ec2_instance.yaml
+      Parameters:
+        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
+        PrivateSubnet: !GetAtt VPCStack.Outputs.PrivateSubnet
+        PublicSG: !GetAtt SecurityGroupStack.Outputs.PublicSG
+        PrivateSG: !GetAtt SecurityGroupStack.Outputs.PrivateSG
+        Ami: ami-0fff1b9a61dec8a5f
+        InstanceType: t2.micro
+
+

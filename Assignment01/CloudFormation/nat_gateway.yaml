@@ -1,0 +1,21 @@
+Parameters:
+  PublicSubnet:
+    Type: String
+
+
+Resources:
+
+  # Elasstic IP for NAT Gateway
+  EIPForNAT:
+    Type: AWS::EC2::EIP
+
+  # NAT Gateway
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      AllocationId: !GetAtt EIPForNAT.AllocationId
+
+Outputs:
+  NatGateway:
+    Value: !Ref NatGateway

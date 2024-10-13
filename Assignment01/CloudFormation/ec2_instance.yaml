@@ -1,0 +1,49 @@
+Parameters:
+  PublicSG:
+    Type: String
+  PrivateSG:
+    Type: String
+  PublicSubnet:
+    Type: String
+  PrivateSubnet:
+    Type: String
+  Ami:
+    Type: AWS::EC2::Image::Id
+  InstanceType:
+    Type: String
+
+
+Resources:
+  # EC2 Instances
+  PublicEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PublicSG
+      SubnetId: !Ref PublicSubnet
+      ImageId: !Ref Ami # Thay bằng AMI phù hợp với region của bạn
+      KeyName: EC2Key # Thay bằng key pair của bạn
+      Tags:
+        - Key: Name
+          Value: PublicEC2Instance
+
+  PrivateEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref PrivateSG
+      SubnetId: !Ref PrivateSubnet
+      ImageId: !Ref Ami # Thay bằng AMI phù hợp với region của bạn
+      KeyName: EC2Key # Thay bằng key pair của bạn
+      Tags:
+        - Key: Name
+          Value: PrivateEC2Instance
+
+
+Outputs:
+  PublicEC2:
+    Value: !Ref PublicEC2Instance
+  PrivateEC2:
+    Value: !Ref PrivateEC2Instance
