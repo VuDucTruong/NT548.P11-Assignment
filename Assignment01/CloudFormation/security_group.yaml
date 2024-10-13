@@ -1,0 +1,43 @@
+Parameters:
+  VPC:
+    Type: String
+  LocalIP:
+    Type: String
+  
+
+
+Resources:
+  # Security Groups
+  PublicSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH from a specific IP
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Sub "${LocalIP}/32" # Thay YOUR_IP_ADDRESS bằng IP của bạn
+      Tags:
+        - Key: Name
+          Value: PublicSecurityGroup
+
+  PrivateSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH from Public Instance
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref PublicSecurityGroup
+      Tags:
+        - Key: Name
+          Value: PrivateSecurityGroup
+
+Outputs:
+  PublicSG: 
+    Value: !Ref PublicSecurityGroup
+  PrivateSG: 
+    Value: !Ref PrivateSecurityGroup
