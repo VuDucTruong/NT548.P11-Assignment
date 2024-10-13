@@ -10,3 +10,6 @@ output "private_subnet_id" {
 output "igw_id" {
   value = aws_internet_gateway.my_igw.id
 }
+output "default_security_group_id" {
+  value = aws_default_security_group.default.id
+}

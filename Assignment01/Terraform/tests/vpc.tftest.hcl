@@ -33,3 +33,12 @@ run "create_igw" {
         error_message = "Fail to create internet gateway"
     }
 }
+
+run "create_default_security_group" {
+    command = apply
+    
+    assert {
+        condition = module.vpc.default_security_group_id != ""
+        error_message = "Fail to create default security group"
+    }
+}
