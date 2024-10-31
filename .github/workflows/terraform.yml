@@ -30,12 +30,14 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: Assignment01/Terraform
 
       - name: Terraform Plan
         run: terraform plan
         env:
           TF_VAR_ami_id: ${{ vars.AWS_AMI_ID }}
           TF_VAR_device_ip: ${{ vars.DEVICE_IP }}
+        working-directory: Assignment01/Terraform
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
@@ -43,3 +45,4 @@ jobs:
         env:
           TF_VAR_ami_id: ${{ vars.AWS_AMI_ID }}
           TF_VAR_device_ip: ${{ vars.DEVICE_IP }}
+        working-directory: Assignment01/Terraform
