@@ -35,9 +35,11 @@ jobs:
         run: terraform plan
         env:
           TF_VAR_ami_id: ${{ vars.AWS_AMI_ID }}
+          TF_VAR_device_ip: ${{ vars.DEVICE_IP }}
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply -auto-approve
         env:
           TF_VAR_ami_id: ${{ vars.AWS_AMI_ID }}
+          TF_VAR_device_ip: ${{ vars.DEVICE_IP }}
