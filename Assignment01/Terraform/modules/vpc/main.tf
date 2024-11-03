@@ -48,6 +48,7 @@ resource "aws_default_security_group" "default" {
     from_port   = 0    # Cho phép từ port 0 đến 65535
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"] # Cho phép truy cập từ mọi IP
+    description = "For all IP"
   }
 
   egress {
@@ -55,10 +56,10 @@ resource "aws_default_security_group" "default" {
     from_port   = 0
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"] # Cho phép lưu lượng truy cập đi ra mọi IP
+    description = "For all IP"
   }
 
   tags = {
     Name = "Default security group"
   }
 }
-

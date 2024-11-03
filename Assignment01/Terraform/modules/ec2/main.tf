@@ -7,6 +7,13 @@ resource "aws_instance" "public_instance" {
   vpc_security_group_ids      = [var.public_ec2_sg_id] # Sử dụng vpc_security_group_ids thay vì security_groups
   ebs_optimized               = true
   monitoring                  = true
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required" # Enables only IMDSv2
+  }
+  root_block_device {
+    encrypted = true
+  }
   tags = {
     Name = "public_instance"
   }
@@ -21,7 +28,11 @@ resource "aws_instance" "private_instance" {
   ebs_optimized          = true
   monitoring             = true
   metadata_options {
-    http_tokens = "required"
+    http_endpoint = "enabled"
+    http_tokens   = "required" # Enables only IMDSv2
+  }
+  root_block_device {
+    encrypted = true
   }
   tags = {
     Name = "private_instance"
