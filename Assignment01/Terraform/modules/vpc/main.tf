@@ -44,19 +44,11 @@ resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.my_vpc.id # ID của VPC bạn muốn áp dụng
 
   ingress {
-    protocol    = "-1" # Cho phép tất cả các protocol
-    from_port   = 0    # Cho phép từ port 0 đến 65535
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"] # Cho phép truy cập từ mọi IP
-    description = "For all IP"
+    description = "Restrict all"
   }
 
   egress {
-    protocol    = "-1" # Cho phép tất cả các protocol
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"] # Cho phép lưu lượng truy cập đi ra mọi IP
-    description = "For all IP"
+    description = "Restrict all"
   }
 
   tags = {
