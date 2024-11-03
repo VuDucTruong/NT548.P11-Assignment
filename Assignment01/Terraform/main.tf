@@ -18,13 +18,6 @@ module "route_table" {
   vpc_id            = module.vpc.aws_vpc_id
 }
 
-module "security_group" {
-  source     = "./modules/security_group"
-  device_ip  = var.device_ip
-  vpc_id     = module.vpc.aws_vpc_id
-  depends_on = [module.vpc]
-}
-
 module "ec2" {
   source            = "./modules/ec2"
   ami_id            = var.ami_id
@@ -35,5 +28,14 @@ module "ec2" {
   private_subnet_id = module.vpc.private_subnet_id
   public_subnet_id  = module.vpc.public_subnet_id
 }
+
+module "security_group" {
+  source     = "./modules/security_group"
+  device_ip  = var.device_ip
+  vpc_id     = module.vpc.aws_vpc_id
+  depends_on = [module.vpc]
+}
+
+
 
 
