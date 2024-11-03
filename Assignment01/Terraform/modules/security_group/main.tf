@@ -1,7 +1,7 @@
 # Tạo Security Group cho Public EC2 Instance (chỉ cho phép SSH từ IP cụ thể)
 resource "aws_security_group" "public_ec2_sg" {
-  vpc_id = var.vpc_id
-
+  vpc_id      = var.vpc_id
+  description = "public security group"
   ingress {
     from_port   = 22
     to_port     = 22
@@ -25,8 +25,8 @@ resource "aws_security_group" "public_ec2_sg" {
 
 # Tạo Security Group cho Private EC2 Instance (chỉ cho phép SSH từ Public EC2)
 resource "aws_security_group" "private_ec2_sg" {
-  vpc_id = var.vpc_id
-
+  vpc_id      = var.vpc_id
+  description = "private security group"
   ingress {
     from_port       = 22
     to_port         = 22

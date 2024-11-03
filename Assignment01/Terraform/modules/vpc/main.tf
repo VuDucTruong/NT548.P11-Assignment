@@ -63,3 +63,11 @@ resource "aws_default_security_group" "default" {
     Name = "Default security group"
   }
 }
+
+
+resource "aws_flow_log" "example" {
+  iam_role_arn    = "test"
+  log_destination = "log"
+  traffic_type    = "ALL"
+  vpc_id          = aws_vpc.my_vpc.id
+}
