@@ -7,6 +7,7 @@ resource "aws_security_group" "public_ec2_sg" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["${var.device_ip}/32"]
+    description = "Allow SSH from my IP"
   }
 
   egress {
@@ -14,6 +15,7 @@ resource "aws_security_group" "public_ec2_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 
   tags = {
