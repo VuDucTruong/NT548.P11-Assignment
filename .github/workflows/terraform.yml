@@ -34,7 +34,7 @@ jobs:
       - name: Run Checkov
         uses: bridgecrewio/checkov-action@v12
         with:
-          directory: ${{ env.WORKING_DIR }}
+          directory: ${{ env.WORKING_DIRECTORY }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
-        working-directory: ${{ env.WORKING_DIR }}
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Terraform Plan
         id: plan
@@ -66,7 +66,7 @@ jobs:
         env:
           TF_VAR_ami_id: ${{ vars.AWS_AMI_ID }}
           TF_VAR_device_ip: ${{ vars.DEVICE_IP }}
-        working-directory: ${{ env.WORKING_DIR }}
+        working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
@@ -78,4 +78,4 @@ jobs:
         env:
           TF_VAR_ami_id: ${{ vars.AWS_AMI_ID }}
           TF_VAR_device_ip: ${{ vars.DEVICE_IP }}
-        working-directory: ${{ env.WORKING_DIR }}
+        working-directory: ${{ env.WORKING_DIRECTORY }}
