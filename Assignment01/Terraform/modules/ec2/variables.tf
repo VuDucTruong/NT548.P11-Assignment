@@ -14,9 +14,10 @@ variable "public_subnet_id" {
 variable "private_subnet_id" {
 
 }
-variable "public_ec2_sg_id" {
-
+variable "device_ip" {
+  description = "Địa chỉ IP của máy bạn/32"
+  type        = string
 }
-variable "private_ec2_sg_id" {
+variable "vpc_id" {
 
 }
