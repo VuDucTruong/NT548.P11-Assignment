@@ -114,7 +114,6 @@ resource "aws_iam_role_policy" "vpc_flow_logs_policy" {
           "organizations:ListAccounts",
           "organizations:ListDelegatedAdministrators"
         ],
-        "Resource" : "*"
       },
       {
         "Sid" : "CloudWatchMetricsPublishActions",
