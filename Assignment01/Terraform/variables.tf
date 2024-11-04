@@ -11,7 +11,7 @@ variable "secret_key" {
 variable "ami_id" {
   description = "AMI để tạo EC2 instance"
   type        = string
-  default     = "ami-0fff1b9a61dec8a5f"
+  default     = "ami-06b21ccaeff8cd686"
 }
 variable "instance_type" {
   default     = "t2.micro"

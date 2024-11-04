@@ -43,23 +43,67 @@ resource "aws_subnet" "private_subnet" {
 resource "aws_default_security_group" "default" {
   vpc_id = aws_vpc.my_vpc.id # ID của VPC bạn muốn áp dụng
 
-  ingress {
-    description = "Restrict all"
-  }
-
-  egress {
-    description = "Restrict all"
-  }
-
   tags = {
     Name = "Default security group"
   }
 }
 
 
-resource "aws_flow_log" "example" {
-  iam_role_arn    = "test"
-  log_destination = "log"
-  traffic_type    = "ALL"
-  vpc_id          = aws_vpc.my_vpc.id
+# IAM Role for VPC Flow Logs
+resource "aws_iam_role" "vpc_flow_logs_role" {
+  name = "vpc_flow_logs_role"
+
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "sts:AssumeRole"
+        ],
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : [
+            "transitgateway.amazonaws.com"
+          ]
+        }
+      }
+    ]
+  })
 }
+
+# Attach a policy to allow logs to be written to CloudWatch Logs
+resource "aws_iam_role_policy" "vpc_flow_logs_policy" {
+  name = "vpc_flow_logs_policy"
+  role = aws_iam_role.vpc_flow_logs_role.id
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Action" : [
+          "ec2:CreateNetworkInterface",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:ModifyNetworkInterfaceAttribute",
+          "ec2:DeleteNetworkInterface",
+          "ec2:CreateNetworkInterfacePermission",
+          "ec2:AssignIpv6Addresses",
+          "ec2:UnAssignIpv6Addresses"
+        ],
+        "Resource" : "*",
+        "Effect" : "Allow",
+        "Sid" : "0"
+      }
+    ]
+  })
+}
+
+# VPC Flow Log with correct IAM Role ARN
+resource "aws_flow_log" "log_destination" {
+  log_destination_type = "cloud-watch-logs"
+  vpc_id               = aws_vpc.my_vpc.id
+  iam_role_arn         = aws_iam_role.vpc_flow_logs_role.arn # Correct ARN
+
+  tags = {
+    Name = "vpc_flow_logs"
+  }
+}
+
