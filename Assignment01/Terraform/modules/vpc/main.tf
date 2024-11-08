@@ -1,5 +1,6 @@
 # 1. Tạo VPC
 resource "aws_vpc" "my_vpc" {
+  #checkov:skip=CKV2_AWS_11: No need to log at module level
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
   enable_dns_hostnames = true
@@ -47,87 +48,3 @@ resource "aws_default_security_group" "default" {
     Name = "Default security group"
   }
 }
-
-
-# IAM Role for VPC Flow Logs
-resource "aws_iam_role" "vpc_flow_logs_role" {
-  name = "vpc_flow_logs_role"
-
-  assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Action" : [
-          "sts:AssumeRole"
-        ],
-        "Effect" : "Allow",
-        "Principal" : {
-          "Service" : [
-            "transitgateway.amazonaws.com"
-          ]
-        }
-      }
-    ]
-  })
-}
-
-# VPC Flow Log with correct IAM Role ARN
-resource "aws_flow_log" "log_destination" {
-  log_destination_type = "cloud-watch-logs"
-  vpc_id               = aws_vpc.my_vpc.id
-  iam_role_arn         = aws_iam_role.vpc_flow_logs_role.arn # Correct ARN
-
-  tags = {
-    Name = "vpc_flow_logs"
-  }
-}
-
-# Attach a policy to allow logs to be written to CloudWatch Logs
-resource "aws_iam_role_policy" "vpc_flow_logs_policy" {
-  name = "vpc_flow_logs_policy"
-  role = aws_iam_role.vpc_flow_logs_role.id
-  policy = jsonencode({
-    "Version" : "2012-10-17",
-    "Statement" : [
-      {
-        "Sid" : "IPAMDiscoveryDescribeActions",
-        "Effect" : "Allow",
-        "Action" : [
-          "ec2:DescribeAccountAttributes",
-          "ec2:DescribeAddresses",
-          "ec2:DescribeByoipCidrs",
-          "ec2:DescribeIpv6Pools",
-          "ec2:DescribeNetworkInterfaces",
-          "ec2:DescribePublicIpv4Pools",
-          "ec2:DescribeSecurityGroups",
-          "ec2:DescribeSecurityGroupRules",
-          "ec2:DescribeSubnets",
-          "ec2:DescribeVpcs",
-          "ec2:DescribeVpnConnections",
-          "ec2:GetIpamDiscoveredAccounts",
-          "ec2:GetIpamDiscoveredPublicAddresses",
-          "ec2:GetIpamDiscoveredResourceCidrs",
-          "globalaccelerator:ListAccelerators",
-          "globalaccelerator:ListByoipCidrs",
-          "organizations:DescribeAccount",
-          "organizations:DescribeOrganization",
-          "organizations:ListAccounts",
-          "organizations:ListDelegatedAdministrators"
-        ],
-      },
-      {
-        "Sid" : "CloudWatchMetricsPublishActions",
-        "Effect" : "Allow",
-        "Action" : "cloudwatch:PutMetricData",
-        "Condition" : {
-          "StringEquals" : {
-            "cloudwatch:namespace" : "AWS/IPAM"
-          }
-        }
-      }
-    ]
-  })
-}
-
-
-

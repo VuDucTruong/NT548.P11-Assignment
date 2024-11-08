@@ -1,12 +1,6 @@
 variable "region" {
   default = "us-east-1"
 }
-variable "access_key" {
-  type = string
-}
-variable "secret_key" {
-  type = string
-}
 
 variable "ami_id" {
   description = "AMI để tạo EC2 instance"

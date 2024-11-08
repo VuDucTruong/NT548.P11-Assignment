@@ -70,8 +70,6 @@ jobs:
         id: plan
         run: terraform plan
         env:
-          TF_VAR_access_key: ${{ env.ACCESS_KEY }}
-          TF_VAR_secret_key: ${{ env.SECRET_KEY }}
           TF_VAR_ami_id: ${{ env.AMI_ID }}
           TF_VAR_device_ip: ${{ env.DEVICE_IP }}
           TF_VAR_region: ${{env.REGION}}
@@ -86,8 +84,6 @@ jobs:
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: terraform apply -auto-approve
         env:
-          TF_VAR_access_key: ${{ env.ACCESS_KEY }}
-          TF_VAR_secret_key: ${{ env.SECRET_KEY }}
           TF_VAR_ami_id: ${{ env.AMI_ID }}
           TF_VAR_device_ip: ${{ env.DEVICE_IP }}
           TF_VAR_region: ${{env.REGION}}
