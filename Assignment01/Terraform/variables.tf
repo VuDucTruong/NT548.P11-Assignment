@@ -5,7 +5,7 @@ variable "region" {
 variable "ami_id" {
   description = "AMI để tạo EC2 instance"
   type        = string
-  default     = "ami-06b21ccaeff8cd686"
+  default     = "ami-063d43db0594b521b"
 }
 variable "instance_type" {
   default     = "t2.micro"

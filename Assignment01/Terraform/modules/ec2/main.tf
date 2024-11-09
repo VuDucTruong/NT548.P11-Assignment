@@ -1,3 +1,35 @@
+
+# Create an IAM Role
+resource "aws_iam_role" "ec2_role" {
+  name = "ec2_role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+# Attach a policy to the IAM Role (for example, read-only access to S3)
+resource "aws_iam_role_policy_attachment" "ec2_role_policy_attachment" {
+  role       = aws_iam_role.ec2_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess" # Example policy
+}
+
+# Create an Instance Profile to attach the IAM Role to the EC2 instance
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "ec2_instance_profile"
+  role = aws_iam_role.ec2_role.name
+}
+
+
+
 # Tạo Public EC2 Instance
 resource "aws_instance" "public_instance" {
   ami                         = var.ami_id # Thay thế bằng AMI ID thực tế
@@ -7,7 +39,7 @@ resource "aws_instance" "public_instance" {
   security_groups             = [aws_security_group.public_ec2_sg.id] # Sử dụng vpc_security_group_ids thay vì security_groups
   ebs_optimized               = true
   monitoring                  = true
-  iam_instance_profile        = "test"
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required" # Enables only IMDSv2
@@ -28,7 +60,7 @@ resource "aws_instance" "private_instance" {
   security_groups      = [aws_security_group.private_ec2_sg.id] # Sử dụng vpc_security_group_ids thay vì security_groups
   ebs_optimized        = true
   monitoring           = true
-  iam_instance_profile = "test"
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required" # Enables only IMDSv2
