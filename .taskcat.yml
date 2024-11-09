@@ -1,0 +1,14 @@
+---
+project:
+  name: nhom21
+  regions:
+    - us-east-1
+  s3_bucket: my-taskcat-bucket1  # Ensure this bucket exists in your AWS account
+tests:
+  default:
+    template: ./main.yaml  # Adjust path to your CloudFormation template
+    s3_bucket: my-taskcat-bucket1  # The S3 bucket where the template is located
+    parameters:
+      KeyName: user1  # Replace with your actual key pair name
+      InstanceType: t2.micro
+      Ami: ami-063d43db0594b521b  # Replace with the actual AMI ID you want to use

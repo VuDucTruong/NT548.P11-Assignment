@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Bài thực hành 1 của nhóm 21
+
+
+Parameters:
+  LocalIP:
+    Description: "Your IP address"
+    Type: String
+    Default: 192.168.1.105
+  Ami:
+    Description: "AMI type for EC2 Instance"
+    Type: AWS::EC2::Image::Id
+    Default: ami-063d43db0594b521b
+  InstanceType:
+    Description: "instance type of EC2"
+    Type: String
+    Default: t2.micro
+  HostURL:
+    Description: "Your host url of S3 Bucket"
+    Type: String
+    Default: https://nhom21.s3.us-east-1.amazonaws.com
+  KeyName:
+    Description: "key name of your key pair"
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: user1
+
+
+Resources:
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${HostURL}/vpc.yaml"
+
+  
+  NATGatewayStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${HostURL}/nat_gateway.yaml"
+      Parameters:
+        PublicSubnet: !GetAtt  VPCStack.Outputs.PublicSubnet
+
+  RouteTablesStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${HostURL}/route_table.yaml"
+      Parameters:
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        IGW: !GetAtt VPCStack.Outputs.IGW
+        PublicSubnet: !GetAtt  VPCStack.Outputs.PublicSubnet
+        PrivateSubnet: !GetAtt  VPCStack.Outputs.PrivateSubnet
+        NatGateway: !GetAtt NATGatewayStack.Outputs.NatGateway
+
+  SecurityGroupStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${HostURL}/security_group.yaml"
+      Parameters:
+        VPC: !GetAtt VPCStack.Outputs.VPC
+        LocalIP: !Ref LocalIP
+
+  EC2Stack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub "${HostURL}/ec2_instance.yaml"
+      Parameters:
+        PublicSubnet: !GetAtt VPCStack.Outputs.PublicSubnet
+        PrivateSubnet: !GetAtt VPCStack.Outputs.PrivateSubnet
+        PublicSG: !GetAtt SecurityGroupStack.Outputs.PublicSG
+        PrivateSG: !GetAtt SecurityGroupStack.Outputs.PrivateSG
+        Ami: !Ref Ami
+        InstanceType: !Ref InstanceType
+        KeyName: !Ref KeyName
+
+

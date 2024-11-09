@@ -1,0 +1,73 @@
+Parameters:
+  VPCCidrBlock: 
+    Type: String
+    Default: 10.0.0.0/16
+  PublicSubnetCidrBlock:
+    Type: String
+    Default: 10.0.1.0/24
+  PrivateSubnetCidrBlock:
+    Type: String
+    Default: 10.0.2.0/24
+
+Resources:
+  # VPC
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties: 
+      CidrBlock: !Ref VPCCidrBlock
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
+
+  # Subnets
+  # Public subnet
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnetCidrBlock
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select [0, !GetAZs ''] # Select region
+      Tags:
+        - Key: Name
+          Value: PublicSubnet
+        
+  # Private subnet
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PrivateSubnetCidrBlock
+      AvailabilityZone: !Select [0, !GetAZs ''] # Select region
+      Tags:
+        - Key: Name
+          Value: PrivateSubnet
+
+  # Internet Gateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # Default security group
+  DefaultSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Default Security Group"
+      VpcId: !Ref VPC
+
+Outputs:
+  VPC:
+    Value: !Ref VPC
+  PublicSubnet:
+    Value: !Ref PublicSubnet
+  PrivateSubnet:
+    Value: !Ref PrivateSubnet
+  IGW:
+    Value: !Ref InternetGateway
