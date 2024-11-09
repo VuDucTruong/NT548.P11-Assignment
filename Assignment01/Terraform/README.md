@@ -24,7 +24,7 @@ terraform plan
 5. Sử dụng lệnh terraform apply để thực hiện triển khai trên hạ tầng AWS
 
 ```` terminal
-terraform apply
+terraform apply --auto-approve
 ````
 
 <h3>Lưu ý</h3>
