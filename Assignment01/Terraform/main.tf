@@ -27,6 +27,7 @@ module "ec2" {
   public_subnet_id  = module.vpc.public_subnet_id
   device_ip         = var.device_ip
   vpc_id            = module.vpc.aws_vpc_id
+  iam_role = var.iam_role
 }
 
 

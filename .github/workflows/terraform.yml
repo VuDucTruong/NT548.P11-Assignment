@@ -16,6 +16,7 @@ env:
   SECRET_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
   DEVICE_IP: ${{vars.DEVICE_IP}}
   INSTANCE_TYPE: ${{ vars.INSTANCE_TYPE }}
+  IAM_ROLE: ${{vars.IAM_ROLE}}
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -74,6 +75,7 @@ jobs:
           TF_VAR_device_ip: ${{ env.DEVICE_IP }}
           TF_VAR_region: ${{env.REGION}}
           TF_VAR_instance_type: ${{env.INSTANCE_TYPE}}
+          TF_VAR_iam_role: ${{env.IAM_ROLE}}
         working-directory: ${{ env.WORKING_DIRECTORY }}
 
       - name: Terraform Plan Status
@@ -88,4 +90,5 @@ jobs:
           TF_VAR_device_ip: ${{ env.DEVICE_IP }}
           TF_VAR_region: ${{env.REGION}}
           TF_VAR_instance_type: ${{env.INSTANCE_TYPE}}
+          TF_VAR_iam_role: ${{env.IAM_ROLE}}
         working-directory: ${{ env.WORKING_DIRECTORY }}

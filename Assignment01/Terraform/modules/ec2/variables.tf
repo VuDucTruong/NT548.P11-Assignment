@@ -1,7 +1,10 @@
 variable "ami_id" {
   description = "AMI để tạo EC2 instance"
   type        = string
-  default     = "ami-0fff1b9a61dec8a5f"
+}
+variable "iam_role" {
+  type = string
+  description = "Tên của IAM role"
 }
 variable "instance_type" {
   default     = "t2.micro"
