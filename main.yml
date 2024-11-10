@@ -18,7 +18,7 @@ Parameters:
   HostURL:
     Description: "Your host url of S3 Bucket"
     Type: String
-    Default: https://nhom21.s3.us-east-1.amazonaws.com
+    Default: https://git-codecommit.us-east-1.amazonaws.com/v1/repos/nhom21
   KeyName:
     Description: "key name of your key pair"
     Type: AWS::EC2::KeyPair::KeyName
