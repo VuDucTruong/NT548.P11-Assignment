@@ -4,9 +4,13 @@ on:
   push:
     branches:
       - main # Triển khai khi có push vào nhánh main
+    paths:
+      - 'Assignment01/Terraform/**' # Only trigger when files in this directory are modified
   pull_request:
     branches:
       - main
+    paths:
+      - 'Assignment01/Terraform/**' # Only trigger when files in this directory are modified
 
 env:
   WORKING_DIRECTORY: "./Assignment01/Terraform"
