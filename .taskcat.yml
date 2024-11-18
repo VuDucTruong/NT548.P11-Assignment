@@ -1,0 +1,18 @@
+project:
+  name: my-project-name
+  regions:
+    - us-east-1
+  s3_bucket: my-taskcat-bucket1  # Ensure this bucket exists in your AWS account
+
+tests:
+  default:
+    template: ./vpc.yaml  # Path to your CloudFormation template
+    s3_bucket: my-taskcat-bucket1  # The S3 bucket where the template is located
+    parameters:
+      KeyName: user1  # Replace with your actual key pair name
+      InstanceType: t2.micro
+      Ami: ami-012967cc5a8c9f891  # Replace with the actual AMI ID you want to use
+
+
+
+      
